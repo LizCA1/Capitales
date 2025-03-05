@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego de Capitales de México</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <style>
+        body { background-color: #f8c8dc; font-family: Arial, sans-serif; text-align: center; }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+    <div id="gameContainer" class="flex flex-col items-center justify-center h-screen">
+        <h1 class="text-3xl font-bold mb-4">Aprende las Capitales de México</h1>
+        <p class="mb-4">Selecciona la capital correcta del estado mostrado.</p>
+        <h2 id="stateName" class="text-2xl font-bold mb-4"></h2>
+        <div id="options" class="grid grid-cols-2 gap-4"></div>
+        <p id="feedback" class="text-xl font-bold mt-4"></p>
+        <p class="text-lg mt-4">Respuestas Correctas: <span id="score">0</span></p>
+        <p class="text-lg">Respuestas Incorrectas: <span id="wrongScore">0</span></p>
+        <button onclick="startGame()" class="mt-4 px-6 py-3 bg-blue-500 text-white rounded">Comenzar Juego</button>
+    </div>
+    
+    <script>
+        const states = [
+            { estado: "Aguascalientes", capital: "Aguascalientes" },
+            { estado: "Baja California", capital: "Mexicali" },
+            { estado: "Baja California Sur", capital: "La Paz" },
+            { estado: "Campeche", capital: "Campeche" },
+            { estado: "Coahuila", capital: "Saltillo" },
+            { estado: "Colima", capital: "Colima" },
+            { estado: "Chiapas", capital: "Tuxtla Gutiérrez" },
+            { estado: "Chihuahua", capital: "Chihuahua" },
+            { estado: "Ciudad de México", capital: "Ciudad de México" },
+            { estado: "Durango", capital: "Durango" },
+            { estado: "Guanajuato", capital: "Guanajuato" },
+            { estado: "Guerrero", capital: "Chilpancingo" },
+            { estado: "Hidalgo", capital: "Pachuca" },
+            { estado: "Jalisco", capital: "Guadalajara" },
+            { estado: "Estado de México", capital: "Toluca" },
+            { estado: "Michoacán", capital: "Morelia" },
+            { estado: "Morelos", capital: "Cuernavaca" },
+            { estado: "Nayarit", capital: "Tepic" },
+            { estado: "Nuevo León", capital: "Monterrey" },
+            { estado: "Oaxaca", capital: "Oaxaca de Juárez" },
+            { estado: "Puebla", capital: "Puebla" },
+            { estado: "Querétaro", capital: "Santiago de Querétaro" },
+            { estado: "Quintana Roo", capital: "Chetumal" },
+            { estado: "San Luis Potosí", capital: "San Luis Potosí" },
+            { estado: "Sinaloa", capital: "Culiacán" },
+            { estado: "Sonora", capital: "Hermosillo" },
+            { estado: "Tabasco", capital: "Villahermosa" },
+            { estado: "Tamaulipas", capital: "Ciudad Victoria" },
+            { estado: "Tlaxcala", capital: "Tlaxcala" },
+            { estado: "Veracruz", capital: "Xalapa" },
+            { estado: "Yucatán", capital: "Mérida" },
+            { estado: "Zacatecas", capital: "Zacatecas" }
+        ];
+        
+        let remainingStates = [];
+        let score = 0;
+        let wrongScore = 0;
+
+        function startGame() {
+            score = 0;
+            wrongScore = 0;
+            document.getElementById("score").innerText = score;
+            document.getElementById("wrongScore").innerText = wrongScore;
+            remainingStates = [...states];
+            nextQuestion();
+        }
+        
+        function nextQuestion() {
+            if (remainingStates.length === 0) {
+                alert("¡Felicidades! Has completado el juego.");
+                return;
+            }
+            let randomIndex = Math.floor(Math.random() * remainingStates.length);
+            let currentQuestion = remainingStates.splice(randomIndex, 1)[0];
+            document.getElementById("stateName").innerText = currentQuestion.estado;
+            
+            let options = [...states].sort(() => Math.random() - 0.5).slice(0, 3);
+            options.push(currentQuestion);
+            options.sort(() => Math.random() - 0.5);
+            
+            document.getElementById("options").innerHTML = options.map(option => 
+                `<button onclick="checkAnswer('${option.capital}', '${currentQuestion.capital}')" 
+                class="px-4 py-2 bg-gray-300 rounded">${option.capital}</button>`
+            ).join(" ");
+        }
+        
+        function checkAnswer(selected, correct) {
+            if (selected === correct) {
+                document.getElementById("feedback").innerText = "¡Felicidades! Respuesta correcta.";
+                document.getElementById("feedback").classList.add("text-green-600");
+                score++;
+            } else {
+                document.getElementById("feedback").innerText = "Sigue intentando. Respuesta incorrecta.";
+                document.getElementById("feedback").classList.add("text-red-600");
+                wrongScore++;
+            }
+            document.getElementById("score").innerText = score;
+            document.getElementById("wrongScore").innerText = wrongScore;
+            setTimeout(() => {
+                document.getElementById("feedback").innerText = "";
+                nextQuestion();
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
